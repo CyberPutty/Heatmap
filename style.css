@@ -1,0 +1,10 @@
+svg{
+    background-color: blue;
+}
+#tooltip{
+    -moz-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   pointer-events : none;
+/* in order to prevent mouseleave from bubbling neeed to prevent pointer events!!*/
+}
