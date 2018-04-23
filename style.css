@@ -1,5 +1,12 @@
+#chart{
+    margin: auto;
+    text-align: center;
+}
 svg{
     background-color:lightblue;
+}
+rect:hover{
+    fill: white;
 }
 #tooltip{
     -moz-user-select: none;

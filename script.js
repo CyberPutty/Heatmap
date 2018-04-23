@@ -1,48 +1,85 @@
 let dataset=[20,45,78,100,15];
 let dataset2=[[20,45],[30,70],[100,50],[150,30],[70,35],[280,180],[15,30],[20,95]]
+let grossData;
+let padding= 50;
+let width= 1400;
+let height= 1000+ padding;
 
-let padding= 30;
-let width= 600+ padding;
-let height= 600+ padding;
+
+document.addEventListener('DOMContentLoaded', function(){
+    fetch("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json")
+    .then((response)=>response.json())
+    .then((data)=>{
+        console.log(data);
+        grossData= data.data;
+        setChart();
+    })
+    
+}
+    
+);
+
+///d3 3 phase enter update remove
+
+function setChart(){
+    
+
+let dateMax= new Date( d3.max(grossData,function(d){
+    return d[0];
+}));
+let dateMin= new Date( d3.min(grossData,function(d){
+    return d[0];
+}));
+let valueMax= d3.max(grossData, function(d){
+    return d[1];
+});
+let valueMin= d3.min(grossData, function(d){
+    return d[1];
+});  
+
+console.log(dateMax);
 let chart= d3.select("#chart")
 .append("svg")
 .attrs({
     "width": width,
     "height": height
 });
-let xscale= d3.scaleLinear();
-xscale.domain([0,d3.max(dataset, function(d){
-    return d;
-})]);
-xscale.range([0,height-(padding*2)]);
+let xscale= d3.scaleTime();
+xscale.domain([dateMin,dateMax]);
+
+xscale.range([0,width-(padding*2)]);
 
 let yscale= d3.scaleLinear();
+yscale.domain([valueMin,valueMax]);
+yscale.range([0,height-(padding*2)]);
 
-yscale.domain([0,d3.max(dataset, function(d){
-    return d;
-})]);
-yscale.range([height-padding,padding]);
 
-///d3 3 phase enter update remove
-let xAxis=d3.axisBottom(xscale).tickSize([0]).ticks(0);
-let yAxis=d3.axisLeft(yscale);
+console.log(yscale.domain());
 
+
+
+
+
+console.log(grossData);
 chart.selectAll("rect")
-.data(dataset)
+.data(grossData)
 .enter()
 .append("rect")
 .attrs({
  "width": function(){
-     return (width/dataset.length)-(padding *2);
+     console.log(grossData.length);
+     return ((width-(padding * 2))/grossData.length);
  },
  "height": function(d){
-     return xscale(d);
+     
+     return yscale(d[1]);
  },
  "x": function(d,i){
-     return (width/dataset.length)*i+ padding;
+     return ((width-padding *2)/grossData.length)*i+ padding;
  },
  "y": function(d){
-     return (height-xscale(d))- padding;
+     
+     return (height-yscale(d[1]))- padding;
  },
  "fill": "teal",
 
@@ -50,11 +87,11 @@ chart.selectAll("rect")
 
 chart .selectAll("rect")
 .on("mouseenter",function(d){
-    console.log(d);
+
     let x= d3.mouse(this)[0];
     let y= d3.mouse(this)[1];
     if(!document.getElementById("tooltip")){
-  
+   
     chart.append("text")
    .text(d)
    .attrs({
@@ -87,6 +124,10 @@ chart .selectAll("rect")
     }
    
 });
+yscale.range([height-padding,padding]);
+let xAxis=d3.axisBottom(xscale);
+let yAxis=d3.axisLeft(yscale);
+
 chart.append("g")
 .attr("class","yaxis")
 .attr("transform","translate("+padding+",0)")
@@ -96,4 +137,4 @@ chart.append("g")
 .attr("class","xaxis")
 .attr("transform","translate("+padding+","+(height-padding)+")")
 .call(xAxis);
-
+}
