@@ -1,8 +1,9 @@
 let dataset=[20,45,78,100,15];
 let dataset2=[[20,45],[30,70],[100,50],[150,30],[70,35],[280,180],[15,30],[20,95]]
 let grossData;
-let padding= 50;
-let width= 1400;
+let description;
+let padding= 200;
+let width= 1800;
 let height= 1000+ padding;
 
 
@@ -12,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function(){
     .then((data)=>{
         console.log(data);
         grossData= data.data;
+        description= data.description;
+        
+
         setChart();
     })
     
@@ -55,9 +59,15 @@ yscale.range([0,height-(padding*2)]);
 
 
 console.log(yscale.domain());
+let formatTime= d3.timeFormat("%B,%Y");
 
 
-
+chart.append("text").text("US Gross Domestic Product- Quarterly")
+.attrs({
+    "class": "title",
+    "x": (width/2-(padding*2)),
+    "y": padding
+});
 
 
 console.log(grossData);
@@ -93,7 +103,7 @@ chart .selectAll("rect")
     if(!document.getElementById("tooltip")){
    
     chart.append("text")
-   .text(d)
+   .html(d[1]+" Billion <tspan id='newline' x="+x+" y="+(y+20)+" >"+formatTime(new Date(d[0]))+"</tspan>")
    .attrs({
        "id": "tooltip",
        "x": x,
@@ -109,7 +119,10 @@ chart .selectAll("rect")
  
   let tooltip= document.getElementById("tooltip");
   
- 
+d3.select("#newline").attrs({
+    "x": x,
+    "y": y+20   
+});
       d3.select("#tooltip").attrs({
     "x": x,
     "y": y   
@@ -137,4 +150,7 @@ chart.append("g")
 .attr("class","xaxis")
 .attr("transform","translate("+padding+","+(height-padding)+")")
 .call(xAxis);
+
+chart.append("text").text(description)
+.attr("transform","translate("+width/10+","+padding*5.5+")");
 }

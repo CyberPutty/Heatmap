@@ -1,17 +1,25 @@
+
 #chart{
     margin: auto;
     text-align: center;
 }
 svg{
+ 
     background-color:lightblue;
 }
 rect:hover{
     fill: white;
 }
+
 #tooltip{
+   
     -moz-user-select: none;
    -khtml-user-select: none;
    -webkit-user-select: none;
    pointer-events : none;
 /* in order to prevent mouseleave from bubbling neeed to prevent pointer events!!*/
+}
+
+.title{
+    font-size: 50px;
 }
