@@ -6,6 +6,7 @@
 svg{
  
     background-color:lightblue;
+    box-shadow: 1px 1px 3px black;
 }
 rect:hover{
     fill: white;
@@ -22,4 +23,9 @@ rect:hover{
 
 .title{
     font-size: 50px;
+    text-shadow: 1px;
+}
+.axis{
+    font-size: 18px;
+    stroke-width: 2px;
 }

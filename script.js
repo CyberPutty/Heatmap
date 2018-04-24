@@ -3,8 +3,8 @@ let dataset2=[[20,45],[30,70],[100,50],[150,30],[70,35],[280,180],[15,30],[20,95
 let grossData;
 let description;
 let padding= 200;
-let width= 1800;
-let height= 1000+ padding;
+let width= 1500;
+let height= 800+ padding;
 
 
 document.addEventListener('DOMContentLoaded', function(){
@@ -138,16 +138,16 @@ d3.select("#newline").attrs({
    
 });
 yscale.range([height-padding,padding]);
-let xAxis=d3.axisBottom(xscale);
-let yAxis=d3.axisLeft(yscale);
+let xAxis=d3.axisBottom(xscale).tickSizeInner([10]);
+let yAxis=d3.axisLeft(yscale).tickSizeInner([10]);
 
 chart.append("g")
-.attr("class","yaxis")
+.attr("class","axis")
 .attr("transform","translate("+padding+",0)")
 .call(yAxis);
 
 chart.append("g")
-.attr("class","xaxis")
+.attr("class","axis")
 .attr("transform","translate("+padding+","+(height-padding)+")")
 .call(xAxis);
 
