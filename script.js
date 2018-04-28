@@ -7,6 +7,34 @@ let height= 800+ padding;
 let randomColor;
 
 
+
+
+/// y months x years date format 
+// color legend blue to red
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // cylclist data
 document.addEventListener('DOMContentLoaded', function(){
     fetch("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json")

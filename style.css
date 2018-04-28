@@ -4,17 +4,7 @@ display: flex;
  align-items: center;
  justify-content: space-around;
 }
-#data{
-   
-  
-    width: 200px;
-   
-}
-#description{
-    width: 200px;
-    height: 200px;
-    background-color:rgba(191, 215, 230, 0.4);
-}
+
 #chart{
     
    
