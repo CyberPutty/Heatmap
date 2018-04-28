@@ -1,19 +1,17 @@
-let dataset=[20,45,78,100,15];
+
 let dataset2=[[20,45],[30,70],[100,50],[150,30],[70,35],[280,180],[15,30],[20,95]]
-let grossData;
-let description;
+let dataset;
 let padding= 200;
 let width= 1500;
 let height= 800+ padding;
 
-
+// cylclist data
 document.addEventListener('DOMContentLoaded', function(){
-    fetch("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json")
+    fetch("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/cyclist-data.json")
     .then((response)=>response.json())
     .then((data)=>{
         console.log(data);
-        grossData= data.data;
-        description= data.description;
+        dataset= data;
         
 
         setChart();
@@ -23,46 +21,103 @@ document.addEventListener('DOMContentLoaded', function(){
     
 );
 
+
+// maxtime will always be greatest overall time only need to subtract from max.
+function timeFormat(time, maxTime){
+let time1=time.split(":");
+let time2=maxTime.split(":");
+let min= time1[0];
+let sec= time1[1];
+let maxMin= time2[0];
+let maxSec= time2[1];
+let newTime=[];
+console.log(time1);
+newTime.push(maxMin-min);
+newTime.push(maxSec-sec);
+if (newTime[1]<0){
+    newTime[0] -= 1;
+    newTime[1]=60+newTime[1];
+    // newTime[1] will be negative
+    return newTime;
+}
+else {
+    return newTime;
+}
+
+
+}
+// input as seconds 
+function format(time){
+let min=0;
+let sec=0;
+
+    while(time>0){
+        if (time>60){
+            time-=60;
+            min++;
+            
+        }
+else{
+    sec=time;
+   time=0;
+}
+}
+
+let newTime=[min,sec].join(":");
+
+    return newTime;
+}
+
+
+console.log(console.log(format(2222)));
+
 ///d3 3 phase enter update remove
 
 function setChart(){
     
-
-let dateMax= new Date( d3.max(grossData,function(d){
-    return d[0];
-}));
-let dateMin= new Date( d3.min(grossData,function(d){
-    return d[0];
-}));
-let valueMax= d3.max(grossData, function(d){
-    return d[1];
+let formatTime= d3.timeFormat("%M:%S");
+let parseTime= d3.timeParse("%M:%S")
+let rankMax=  d3.max(dataset,function(d){
+    
+    return d.Place;
 });
-let valueMin= d3.min(grossData, function(d){
-    return d[1];
+let rankMin=d3.min(dataset,function(d){
+    return  d.Place;
+});
+let timeMax=  d3.max(dataset, function(d){
+   
+    return d.Seconds;
+});
+let timeMin=   d3.min(dataset, function(d){
+    return d.Seconds;
 });  
 
-console.log(dateMax);
+
 let chart= d3.select("#chart")
 .append("svg")
 .attrs({
     "width": width,
     "height": height
 });
-let xscale= d3.scaleTime();
-xscale.domain([dateMin,dateMax]);
+let xscale= d3.scaleLinear();
+
+xscale.domain([timeMax-timeMax,timeMax-timeMin]);
+// can't use time format without converting to date...
+// since I cannot use date, 
 
 xscale.range([0,width-(padding*2)]);
+xscale.tickFormat(format);
 
 let yscale= d3.scaleLinear();
-yscale.domain([valueMin,valueMax]);
+yscale.domain([rankMin,rankMax]);
 yscale.range([0,height-(padding*2)]);
 
 
-console.log(yscale.domain());
-let formatTime= d3.timeFormat("%B,%Y");
+console.log(xscale.domain());
 
 
-chart.append("text").text("US Gross Domestic Product- Quarterly")
+
+chart.append("text").text("Doping In Professional Cycling")
 .attrs({
     "class": "title",
     "x": (width/2-(padding*2)),
@@ -70,26 +125,21 @@ chart.append("text").text("US Gross Domestic Product- Quarterly")
 });
 
 
-console.log(grossData);
-chart.selectAll("rect")
-.data(grossData)
+
+chart.selectAll("circle")
+.data(dataset)
 .enter()
-.append("rect")
+.append("circle")
 .attrs({
- "width": function(){
-     console.log(grossData.length);
-     return ((width-(padding * 2))/grossData.length);
+ "cx": function(d){
+    return xscale(timeMax-d.Seconds)+ padding;
+},
+ "cy": function(d){
+     return yscale(d.Place)+padding;
  },
- "height": function(d){
-     
-     return yscale(d[1]);
- },
- "x": function(d,i){
-     return ((width-padding *2)/grossData.length)*i+ padding;
- },
- "y": function(d){
-     
-     return (height-yscale(d[1]))- padding;
+ "r": function(d){
+    
+     return d.Seconds/200;
  },
  "fill": "teal",
 
@@ -103,7 +153,7 @@ chart .selectAll("rect")
     if(!document.getElementById("tooltip")){
    
     chart.append("text")
-   .html(d[1]+" Billion <tspan id='newline' x="+x+" y="+(y+20)+" >"+formatTime(new Date(d[0]))+"</tspan>")
+   .html("text")
    .attrs({
        "id": "tooltip",
        "x": x,
@@ -142,15 +192,25 @@ let xAxis=d3.axisBottom(xscale).tickSizeInner([10]);
 let yAxis=d3.axisLeft(yscale).tickSizeInner([10]);
 
 chart.append("g")
-.attr("class","axis")
+.attr("class","yaxis")
 .attr("transform","translate("+padding+",0)")
 .call(yAxis);
 
 chart.append("g")
-.attr("class","axis")
+.attr("class","xaxis")
 .attr("transform","translate("+padding+","+(height-padding)+")")
 .call(xAxis);
 
-chart.append("text").text(description)
+chart.append("text").text("description")
 .attr("transform","translate("+width/10+","+padding*5.5+")");
+
+
+d3.selectAll(".xaxis")
+.selectAll(".tick>text")
+.text(function(d){
+    console.log(format(d));
+    return format(d)
+});
+
+
 }

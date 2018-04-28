@@ -25,7 +25,8 @@ rect:hover{
     font-size: 50px;
     text-shadow: 1px;
 }
-.axis{
+.xaxis, .yaxis{
     font-size: 18px;
     stroke-width: 2px;
 }
+
