@@ -1,17 +1,38 @@
-
+body{
+    background-image: url(./cycling-background.jpg);
+display: flex;
+ align-items: center;
+ justify-content: space-around;
+}
+#data{
+   
+  
+    width: 200px;
+   
+}
+#description{
+    width: 200px;
+    height: 200px;
+    background-color:rgba(191, 215, 230, 0.4);
+}
 #chart{
-    margin: auto;
+    
+   
     text-align: center;
+
 }
 svg{
  
-    background-color:lightblue;
-    box-shadow: 1px 1px 3px black;
+    background-color:rgba(208, 219, 226, 0.6);
+
 }
-rect:hover{
+circle:hover{
     fill: white;
 }
-
+.label{
+    
+    font-size: 30px;
+}
 #tooltip{
    
     -moz-user-select: none;
@@ -24,6 +45,9 @@ rect:hover{
 .title{
     font-size: 50px;
     text-shadow: 1px;
+}
+.subtitle{
+    font-size: 24px;
 }
 .xaxis, .yaxis{
     font-size: 18px;

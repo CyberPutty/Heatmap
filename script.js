@@ -4,6 +4,8 @@ let dataset;
 let padding= 200;
 let width= 1500;
 let height= 800+ padding;
+let randomColor;
+
 
 // cylclist data
 document.addEventListener('DOMContentLoaded', function(){
@@ -12,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function(){
     .then((data)=>{
         console.log(data);
         dataset= data;
-        
+        randomColor= filterNames(dataset);
 
         setChart();
     })
@@ -21,6 +23,28 @@ document.addEventListener('DOMContentLoaded', function(){
     
 );
 
+function randomInt(min, max) {
+    return min + Math.floor(Math.random() * (Math.floor(max) - min));
+  }
+
+
+function filterNames(arr){
+    console.log(arr);
+let uniqueNames=[];
+let colors=[];
+
+
+    arr.map(function(d){
+let count=0;
+if (uniqueNames.indexOf(d.Name)===-1){
+    uniqueNames.push(d.Name);
+    colors.push("rgb("+randomInt(0,255)+","+randomInt(0,255)+","+randomInt(0,255)+")");
+}
+
+});
+
+return [uniqueNames,colors];
+}
 
 // maxtime will always be greatest overall time only need to subtract from max.
 function timeFormat(time, maxTime){
@@ -120,12 +144,20 @@ console.log(xscale.domain());
 chart.append("text").text("Doping In Professional Cycling")
 .attrs({
     "class": "title",
-    "x": (width/2-(padding*2)),
-    "y": padding
+    "x": (width/2),
+    "y": padding/2,
+    "text-anchor": "middle"
+});
+chart.append("text").text("35 fastest times up Alpe d'Huez")
+.attrs({
+    "class": "subtitle",
+    "x": (width/2),
+    "y": padding/1.5,
+    "text-anchor": "middle"
 });
 
 
-
+// if I map name data and store unique names in a list[] can create color chart for names.
 chart.selectAll("circle")
 .data(dataset)
 .enter()
@@ -139,27 +171,33 @@ chart.selectAll("circle")
  },
  "r": function(d){
     
-     return d.Seconds/200;
+     return d.Seconds/300;
  },
- "fill": "teal",
+ "fill": function(d){
+     let colorIndex= randomColor[0].indexOf(d.Name);
+     return randomColor[1][colorIndex];
+ },
 
 });
 
-chart .selectAll("rect")
+chart .selectAll("circle")
 .on("mouseenter",function(d){
 
     let x= d3.mouse(this)[0];
     let y= d3.mouse(this)[1];
     if(!document.getElementById("tooltip")){
-   
+        console.log(d.Name);
+   document.getElementById("data").innerHTML="<h3 id='description'>Name: " +d.Name+"<br /> Nationality: "+ d.Nationality+"<br />Year: "+ d.Year +"<br /> Time: "+d.Time+"<br />Allegations: "+ d.Doping;"</h3>"
     chart.append("text")
-   .html("text")
+   .html(d.Name)
    .attrs({
        "id": "tooltip",
        "x": x,
        "y": y
    });
    }
+
+
 })
 .on("mousemove",function(){
  
@@ -183,15 +221,28 @@ d3.select("#newline").attrs({
 .on("mouseleave",function(){
     if(document.getElementById("tooltip")){
         
-      d3.select("#tooltip").remove();  
+      d3.select("#tooltip").remove();
+      d3.select("#description").remove(); 
     }
    
 });
+xscale.range([width-(padding*2),0]);
 yscale.range([height-padding,padding]);
 let xAxis=d3.axisBottom(xscale).tickSizeInner([10]);
 let yAxis=d3.axisLeft(yscale).tickSizeInner([10]);
 
-chart.append("g")
+
+chart.append("text").text("Place")
+.attr("text-anchor","middle")
+.attr("transform","translate("+padding/2+","+height/2+") rotate(-90)")
+.attr("class","label");
+
+
+// d3.select(".ylabel")
+//  .attr("transform","rotate(-90)");
+
+
+ chart.append("g")
 .attr("class","yaxis")
 .attr("transform","translate("+padding+",0)")
 .call(yAxis);
@@ -201,8 +252,10 @@ chart.append("g")
 .attr("transform","translate("+padding+","+(height-padding)+")")
 .call(xAxis);
 
-chart.append("text").text("description")
-.attr("transform","translate("+width/10+","+padding*5.5+")");
+chart.append("text").text("Minutes Behind Fastest Time")
+.attr("text-anchor","middle")
+.attr("transform","translate("+width/2+","+padding*4.5+")")
+.attr("class","label");
 
 
 d3.selectAll(".xaxis")
