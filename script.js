@@ -216,7 +216,7 @@ chart .selectAll("rect")
     
 
     chart.append("text")
-   .html(d.variance)
+   .html("Date: "+ d.year+", "+months(d.month)+" Variance: "+d.variance)
    .attrs({
        "id": "tooltip",
        "x": x,
